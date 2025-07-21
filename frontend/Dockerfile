@@ -1,11 +1,18 @@
 FROM node:18
 
-# Set working directory
 WORKDIR /app
 
-# Copy files and install serve
-COPY . /app/
-RUN npm install -g serve
+# Copy only manifest first for dependency caching
+COPY package.json ./
+COPY tsconfig.json ./
+COPY vite.config.ts ./
 
-# Expose static files from index.html
-CMD ["serve", ".", "-l", "3000"]
+RUN npm install vite@5 --save-dev
+
+# Now copy everything else
+COPY . .
+
+# Install remaining dependencies inside container
+RUN npm install
+
+CMD ["npm", "run", "dev", "--", "--host"]

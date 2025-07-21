@@ -16,3 +16,5 @@ services:
       - backend
     volumes:
       - ./frontend:/app  
+    command: npm run dev -- --host
+      
